@@ -4,8 +4,6 @@ from sqlalchemy.orm import sessionmaker
 
 
 settings = get_settings()
-print(settings.MARIADB_USER, settings.MARIADB_PASSWORD)
-
 SQLALCHEMY_DATABASE_URL = "mysql+pymysql://{}:{}@{}:{}/{}".format(
     settings.MARIADB_USER,
     settings.MARIADB_PASSWORD,
