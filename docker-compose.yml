@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  mariadb:
+    image: mariadb:10
+    container_name: mariadb
+    ports:
+      - "3306:3306"
+    expose:
+      - 3306
+    volumes:
+      - "./mariadb/conf.d:/etc/mysql"
+      - "./mariadb/data:/var/lib/mysql"
+    env_file: .env
+    environment:
+      TZ: Asia/Seoul
+    restart: always
+
+  server:
+    container_name: server
+    image: dltjrrbs2020/night_watch_server
+    ports:
+      - "8000:8000"
+    expose:
+      - 8000
+    restart: always
+    environment:
+      MARIADB_HOST: "${MARIADB_HOST}"
+      MARIADB_PORT: "${MARIADB_PORT}"
+      MARIADB_DATABASE: "${MARIADB_DATABASE}"
+      MARIADB_USER: "${MARIADB_USER}"
+      MARIADB_PASSWORD: "${MARIADB_PASSWORD}"
+      MARIADB_ROOT_PASSWORD: "${MARIADB_ROOT_PASSWORD}"
+    depends_on:
+      - mariadb
