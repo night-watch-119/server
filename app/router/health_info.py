@@ -16,8 +16,7 @@ class ResponseHealthInfo(BaseModel):
     heart_rate: int
     oxygen_saturation: str
     measure_at: datetime
-    user_id: int
-    
+    user_id: int 
     
 router = APIRouter(
     prefix="/healthInfo",
@@ -29,10 +28,16 @@ router = APIRouter(
 def add_health_info(body: RequestAddHealthInfo, db: Session = Depends(get_db)):
     return crud_health_info.create(db=db, heart_rate=body.heart_rate, oxygen_saturation=body.oxygen_saturation, user_id=body.user_id)
 
-@router.get("/day")
-def get_health_info_of_user_in_day(user_id: int, year:int, month: int, day: int, db: Session = Depends(get_db)):
-    return crud_health_info.get_health_info_by_user_id(db=db, id=user_id, year=year, month=month, day=day)
-
-@router.get("/month")
-def get_health_info_of_user_in_month(user_id: int, year: int, month: int, db: Session = Depends(get_db)):
-    return crud_health_info.get_health_info_by_user_id_in_month(db=db, id=user_id, year=year, month=month)
+@router.get("/")
+def get_health_info_of_user_in_day(user_id: int, year:int, month: int, day: int, duration: str, db: Session = Depends(get_db)):
+    if(duration == "7-days"):
+        return crud_health_info.get_health_info_by_user_id_in_7days(db=db, id=user_id, year=year, month=month, day=day)
+    elif(duration == "31-days"):
+        return crud_health_info.get_health_info_by_user_id_in_31days(db=db, id=user_id, year=year, month=month, day=day)
+    elif(duration == "12-month"):
+        return crud_health_info.get_health_info_by_user_id_in_12month(db=db, id=user_id, year=year, month=month, day=day)
+    
+@router.get("/latest/{user_id}")
+def get_health_info_of_user_in_day(user_id: int, db: Session = Depends(get_db)):
+    return crud_health_info.get_health_info_by_user_id_latest_one(db=db, id=user_id)
+     
